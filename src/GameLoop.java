@@ -8,6 +8,7 @@ import Animation.FrameDef;
 import Background.BackgroundDef;
 import Background.Platform;
 import Camera.Camera;
+import Character.Lupin;
 import Character.Player;
 
 import com.jogamp.newt.event.KeyEvent;
@@ -44,6 +45,7 @@ public class GameLoop{
     private static int playerTex;
     private static int crawlTex;
     private static int jumpTex;
+    private static int lupinTex;
     
     // Texture for the background
     private static int grassTex;
@@ -125,6 +127,7 @@ public class GameLoop{
 		grassTex = glTexImageTGAFile(gl, "res/tileSky.tga", tileSize);
 		groundTex = glTexImageTGAFile(gl, "res/tileGround.tga", tileSize);
 		playerTex = glTexImageTGAFile(gl, "res/mapleDefault.tga", spriteSize);
+		lupinTex = glTexImageTGAFile(gl, "res/lupinDefault.tga", spriteSize);
 		crawlTex = glTexImageTGAFile(gl, "res/mapleCrawl.tga", spriteSize);
 		jumpTex = glTexImageTGAFile(gl, "res/mapleJump.tga", spriteSize);
 		platformLTex = glTexImageTGAFile(gl, "res/platformLeft.tga", tileSize);
@@ -186,6 +189,10 @@ public class GameLoop{
 		
 		Player player = new Player(spritePos[0], spritePos[1], spriteSize[0], spriteSize[1], playerTex);
 
+		ArrayList<Lupin> lupinList = new ArrayList<Lupin>();
+		lupinList.add(new Lupin(1500, 3900,95,100, lupinTex,true));
+		lupinList.add(new Lupin(2225, 3500,95,100, lupinTex,true));
+		lupinList.add(new Lupin(2225, 3200,95,100, lupinTex,true));
 //		backgroundBossMainA = new BackgroundDef(bossSkyTexA, true, 0, 50, 10, 10);
 //		backgroundBossMainB = new BackgroundDef(bossSkyTexB, true, 0, 50, 10, 10);
 //		backgroundBossFloor = new BackgroundDef(bossGroundtex, false, 50, 60, 10, 10);
@@ -403,6 +410,14 @@ public class GameLoop{
 			if (AABBIntersect(camera.getAabb(), player.getHitbox()))
 			{
 				glDrawSprite(gl, player.getCurrentTexture(), player.getX() - camera.getX(),player.getY() - camera.getY(), player.getWidth(), player.getHeight(), player.getReverse());
+			}
+			
+			for (Lupin lupin: lupinList)
+			{
+				if (AABBIntersect(camera.getAabb(), lupin.getAabb()))
+				{
+					glDrawSprite(gl, lupin.getCurrentTexture(), lupin.getX() - camera.getX(),lupin.getY() - camera.getY(), lupin.getWidth(), lupin.getHeight(), lupin.getReverse());
+				}
 			}
 			
 			}

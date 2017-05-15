@@ -17,7 +17,7 @@ public class Player {
 	private double acceleration;
 	private int boxXoffset;
 	
-	AABB hitbox;
+	private AABB hitbox;
 	private boolean reverse, visible, isShooting, isHit, isJumping, invincible, isPunching, isDead, isCelebrating, bounce;
 	private int currentTexture;
 	
