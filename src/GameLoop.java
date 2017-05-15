@@ -10,6 +10,7 @@ import Background.Platform;
 import Camera.Camera;
 import Character.Lupin;
 import Character.Player;
+import Projectile.Projectile;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
@@ -40,12 +41,16 @@ public class GameLoop{
     
     // Size of Tile
     private static int[] tileSize = new int[2];
+    
+    // Projectile Size
+    private static int[] projectileSize = new int[] {50,50};
 
     // Texture for the sprite.
     private static int playerTex;
     private static int crawlTex;
     private static int jumpTex;
     private static int lupinTex;
+    private static int bananaTex;
     
     // Texture for the background
     private static int grassTex;
@@ -57,6 +62,10 @@ public class GameLoop{
     // Background
     private static BackgroundDef background;
     private static BackgroundDef backgroundFloor;
+    
+    private static ArrayList<Projectile> enemyProjectiles;
+    private static ArrayList<Projectile> bananaProj;
+    private static AABB prjHitBox;
 
 //    private static BackgroundDef backgroundBossMainA ;
 //    private static BackgroundDef backgroundBossMainB ;
@@ -124,10 +133,11 @@ public class GameLoop{
 
 		// Game initialization goes here.
 		
-		grassTex = glTexImageTGAFile(gl, "res/tileSky.tga", tileSize);
+		grassTex = glTexImageTGAFile(gl, "res/backgroundTex.tga", tileSize);
 		groundTex = glTexImageTGAFile(gl, "res/tileGround.tga", tileSize);
 		playerTex = glTexImageTGAFile(gl, "res/mapleDefault.tga", spriteSize);
 		lupinTex = glTexImageTGAFile(gl, "res/lupinDefault.tga", spriteSize);
+		bananaTex = glTexImageTGAFile(gl, "res/bananaPrj.tga", projectileSize);
 		crawlTex = glTexImageTGAFile(gl, "res/mapleCrawl.tga", spriteSize);
 		jumpTex = glTexImageTGAFile(gl, "res/mapleJump.tga", spriteSize);
 		platformLTex = glTexImageTGAFile(gl, "res/platformLeft.tga", tileSize);
@@ -299,6 +309,47 @@ public class GameLoop{
 					}
 
 				}
+				
+				for (Lupin lupin: lupinList)
+				{
+					for (int i = 0; i < lupin.getProjectiles().size(); i++) {
+						bananaProj = lupin.getProjectiles();
+						Projectile prj = bananaProj.get(i);
+						prj.move();
+						prjHitBox = bananaProj.get(i).getprojBox();
+						
+						for (int a = startX; a < endX; a++) {
+							for (int b = startY; b < endY; b++) {
+								
+								// Collision check enemy projectiles with walls
+								if (background.getTile(a, b).isCollision()) {
+									tileAABB = new AABB(a * tileSize[0], b * tileSize[1], 75, 75);
+									boolean coll = AABBIntersect(prjHitBox, tileAABB);
+									if (coll) {
+										prj.setVisible(false);
+									}
+								}
+							}
+						}
+					
+						// Collison check enemy projectiles with player
+						if (AABBIntersect(prjHitBox, player.getHitbox())) {
+							bananaProj.get(i).setVisible(false);
+							bananaProj.remove(i);
+							//sasukeSprite = hitSasuke;
+							if (lupin.getReverse())
+							{
+								player.setY(player.getY() - 20);
+								player.setX(player.getX() + 150);
+							}
+							else
+							{
+								player.setY(player.getY() - 20);
+								player.setX(player.getX() - 150);
+							}
+						}
+					}
+				}
 
 			lastPhysicsFrameMs += physicsDeltaMs;
 			} while (lastPhysicsFrameMs + physicsDeltaMs > curFrameMs);
@@ -315,6 +366,13 @@ public class GameLoop{
             if (kbState[KeyEvent.VK_ESCAPE]) {
                 shouldExit = true;
             }
+            
+            // Enemy actions move or attack
+         	for (Lupin lupin:lupinList) {
+         		if (AABBIntersect(camera.getAabb(), lupin.getAabb())) {
+         			lupin.throwBanana(deltaTimeMS);
+         		}
+         	}
             
             /**
 			 * Player movement code.
@@ -417,6 +475,20 @@ public class GameLoop{
 				if (AABBIntersect(camera.getAabb(), lupin.getAabb()))
 				{
 					glDrawSprite(gl, lupin.getCurrentTexture(), lupin.getX() - camera.getX(),lupin.getY() - camera.getY(), lupin.getWidth(), lupin.getHeight(), lupin.getReverse());
+				}
+			}
+			
+			for (Lupin lupin: lupinList)
+			{
+				enemyProjectiles = lupin.getProjectiles();
+				for (int i = 0; i < enemyProjectiles.size(); i++) {
+					Projectile prj = enemyProjectiles.get(i);
+					if (prj.isVisible()) {
+						glDrawSprite(gl, bananaTex, prj.getX() - camera.getX(), prj.getY() - camera.getY(), projectileSize[0],
+								projectileSize[1],lupin.getReverse());
+					} else {
+						lupin.getProjectiles().remove(prj);
+					}
 				}
 			}
 			
