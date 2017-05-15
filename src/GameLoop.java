@@ -6,6 +6,7 @@ import Animation.AnimationData;
 import Animation.AnimationDef;
 import Animation.FrameDef;
 import Background.BackgroundDef;
+import Background.Platform;
 import Camera.Camera;
 import Character.Player;
 
@@ -27,8 +28,8 @@ public class GameLoop{
     // The current frame's keyboard state.
     private static boolean kbState[] = new boolean[256];
     
-    private static int worldX = 100;
-	private static int worldY = 40;
+    private static int worldX = 40;
+	private static int worldY = 80;
 	
 	 private static int xRes = 800;
 	 private static int yRes = 600;
@@ -41,10 +42,15 @@ public class GameLoop{
 
     // Texture for the sprite.
     private static int playerTex;
+    private static int crawlTex;
+    private static int jumpTex;
     
     // Texture for the background
     private static int grassTex;
     private static int groundTex;
+    private static int platformLTex;
+    private static int platformMTex;
+    private static int platformRTex;
     
     // Background
     private static BackgroundDef background;
@@ -119,10 +125,16 @@ public class GameLoop{
 		grassTex = glTexImageTGAFile(gl, "res/tileSky.tga", tileSize);
 		groundTex = glTexImageTGAFile(gl, "res/tileGround.tga", tileSize);
 		playerTex = glTexImageTGAFile(gl, "res/mapleDefault.tga", spriteSize);
+		crawlTex = glTexImageTGAFile(gl, "res/mapleCrawl.tga", spriteSize);
+		jumpTex = glTexImageTGAFile(gl, "res/mapleJump.tga", spriteSize);
+		platformLTex = glTexImageTGAFile(gl, "res/platformLeft.tga", tileSize);
+		platformMTex = glTexImageTGAFile(gl, "res/platformCenter.tga", tileSize);
+		platformRTex = glTexImageTGAFile(gl, "res/platformRight.tga", tileSize);
 		
-		FrameDef[] mapleRun = { new FrameDef(glTexImageTGAFile(gl, "res/mapleRun1.tga", spriteSize), 150),
-				new FrameDef(glTexImageTGAFile(gl, "res/mapleRun2.tga", spriteSize), 150), 
-				new FrameDef(glTexImageTGAFile(gl, "res/mapleRun4.tga", spriteSize), 150)
+		FrameDef[] mapleRun = { new FrameDef(glTexImageTGAFile(gl, "res/mapleRun1.tga", spriteSize), 50),
+				new FrameDef(glTexImageTGAFile(gl, "res/mapleRun2.tga", spriteSize), 50), 
+				new FrameDef(glTexImageTGAFile(gl, "res/mapleRun3.tga", spriteSize), 50),
+				new FrameDef(glTexImageTGAFile(gl, "res/mapleRun4.tga", spriteSize), 50)
 				};
 		AnimationDef mapleRunDef = new AnimationDef("mapleRun", mapleRun);
 		AnimationData mapleRunData = new AnimationData(mapleRunDef);
@@ -130,7 +142,7 @@ public class GameLoop{
 		background = new BackgroundDef(worldX,worldY,grassTex, 0, worldX * worldY, false, false);
 		background.setTile(groundTex, 0, worldX, true, false); // Top Border
 		background.setTile(groundTex, worldX * ((worldY*2/3)+3),worldX * worldY, true, false );//Bottom Border
-		background.setTile(groundTex, worldX * (worldY/3),worldX * worldY/3 + 1, true, false );
+		//background.setTile(groundTex, worldX * (worldY/3),worldX * worldY/3 + 1, true, false );
 		
 		for (int i=3; i < worldY/8 + 2; i++)
 		{
@@ -141,6 +153,36 @@ public class GameLoop{
 		{
 			background.setTile(groundTex,i * worldX,i * worldX + 1, true, false);
 		}
+		
+		ArrayList<Platform> platforms = new ArrayList<Platform>();
+		//First Row
+		platforms.add(new Platform(400, 4050, 3)); //3
+		platforms.add(new Platform(500, 3900, 3)); //3
+		platforms.add(new Platform(625, 3750, 1)); //1
+		platforms.add(new Platform(300, 3600, 1)); //1
+		platforms.add(new Platform(750, 3500, 3)); //3
+		
+		platforms.add(new Platform(1400, 3825, 3));//3
+		platforms.add(new Platform(1500, 4000, 1));//lupin
+		platforms.add(new Platform(1800, 4000, 2));//2
+		platforms.add(new Platform(2100, 3900, 3));//3
+		platforms.add(new Platform(2400, 4000, 2));//2
+		platforms.add(new Platform(2700, 3900, 4));//3
+		
+		//End of First Row
+		//1st -> 2nd Transition
+		platforms.add(new Platform(2800, 3750, 1));//1
+		platforms.add(new Platform(2450, 3600, 1));//1
+		platforms.add(new Platform(2225, 3600, 1));//lupin
+		platforms.add(new Platform(2800, 3450, 1));//1
+		platforms.add(new Platform(2450, 3300, 1));//1
+		platforms.add(new Platform(2225, 3300, 1));//lupin
+		platforms.add(new Platform(2800, 3150, 4));//4
+		platforms.add(new Platform(2800, 3000, 1));//4
+		platforms.add(new Platform(2800, 2850, 1));//4
+		
+		//Second Row
+		platforms.add(new Platform(2450, 2700, 3));//4
 		
 		Player player = new Player(spritePos[0], spritePos[1], spriteSize[0], spriteSize[1], playerTex);
 
@@ -205,7 +247,7 @@ public class GameLoop{
 									if (player.isBounce() == false)
 										{
 										player.setX(spritePrevX);
-										player.setY(spritePrevY-5);
+										player.setY(spritePrevY-7);
 										player.setX(player.getX() + player.getxVelocity()/10);
 										player.setxVelocity(0);
 										player.setBounce(true);
@@ -222,6 +264,33 @@ public class GameLoop{
 							}
 						}
 					}
+				}
+				
+				for (Platform platform : platforms) {
+					AABB playerBox;
+					if (player.isJumping()) {
+						playerBox = new AABB(player.getHitbox().getX(), player.getHitbox().getY(),
+								player.getHitbox().getH() - 20, player.getHitbox().getW());
+						if (AABBIntersect(playerBox, platform.getCollisionBox()) && player.getyVelocity() > 0) {
+							if (spritePrevY + 80 - platform.getY() < 2) {
+								player.setJumping(false);
+								player.setCurrentTexture(playerTex);
+								player.setyVelocity(0);
+								player.setY(spritePrevY - 20);
+							}
+						}
+					} else {
+						playerBox = player.getHitbox();
+						if (AABBIntersect(player.getHitbox(), platform.getCollisionBox()) && !kbState[KeyEvent.VK_S]) {
+							if (spritePrevY + 100 - platform.getY() < 2) {
+								player.setJumping(false);
+								//monkeyJumpAnimation.resetFrames();
+								player.setyVelocity(0);
+								player.setY(spritePrevY);
+							}
+						}
+					}
+
 				}
 
 			lastPhysicsFrameMs += physicsDeltaMs;
@@ -278,14 +347,14 @@ public class GameLoop{
 				player.setJumping(true);
 				player.setBounce(false);
 				player.setyVelocity(-7);
-				player.setY(player.getY() - 3);
+				player.setCurrentTexture(jumpTex);
+				player.setY(player.getY() - 2);
 				}
 			}
 
 			// Does nothing as of now
 			if (kbState[KeyEvent.VK_S] && player.getY() < background.getHeight() * tileSize[1] - spriteSize[1]) {
-				// player.setJumping(true);
-				//player.setY(player.getY() + 10);
+				player.setCurrentTexture(crawlTex);
 			}
             
             gl.glClearColor(0, 0, 0, 1);
@@ -315,6 +384,20 @@ public class GameLoop{
 					}
 				}
 			}
+			
+			// Draw platforms
+			for (Platform platform : platforms) {
+				if (AABBIntersect(camera.getAabb(), platform.getCollisionBox())) {
+					glDrawSprite(gl, platformLTex, platform.getX() - camera.getX(), platform.getY() - camera.getY(),
+							tileSize[0], tileSize[1], false);
+					for (int i = 0; i < platform.getLength() - 2; i++) {
+						glDrawSprite(gl, platformMTex, platform.getX() + (75 * (i + 1)) - camera.getX(),
+							platform.getY() - camera.getY(), tileSize[0], tileSize[1], false);
+					}
+					glDrawSprite(gl, platformRTex, platform.getX() + (75 * (platform.getLength()-1)) - camera.getX(),
+								platform.getY() - camera.getY(), tileSize[0], tileSize[1], false);
+					}
+				}
 
             // Draw the sprite
 			if (AABBIntersect(camera.getAabb(), player.getHitbox()))
