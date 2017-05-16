@@ -18,7 +18,7 @@ public class Player {
 	private int boxXoffset;
 	
 	private AABB hitbox;
-	private boolean reverse, visible, isShooting, isHit, isJumping, invincible, isPunching, isDead, isCelebrating, bounce;
+	private boolean reverse, visible, isClimbing, isHit, isJumping, invincible, isPunching, isDead, isCelebrating, bounce;
 	private int currentTexture;
 	
 	public Player(int x, int y, int width, int height, int tex) {
@@ -29,7 +29,7 @@ public class Player {
 		
 		hitbox = new AABB(x, y, width, height);
 		reverse = false;
-		isShooting = false;
+		isClimbing = false;
 		isHit = false;
 		setDead(false);
 		acceleration = .2;
@@ -70,12 +70,12 @@ public class Player {
 		return acceleration;
 	}
 
-	public boolean isShooting() {
-		return isShooting;
+	public boolean isClimbing() {
+		return isClimbing;
 	}
 
-	public void setShooting(boolean isShooting) {
-		this.isShooting = isShooting;
+	public void setClimbing(boolean isClimbing) {
+		this.isClimbing = isClimbing;
 	}
 
 	public int getX() {
