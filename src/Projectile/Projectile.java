@@ -95,9 +95,9 @@ public class Projectile {
 	
 	public void moveLeft() {
 		{
-		this.x -= getSpeed()/3;
-		this.distanceTraveled += getSpeed()/3;
-		this.projBox.addToXCoord(-getSpeed()/3);
+		this.x -= getSpeed();
+		this.distanceTraveled += getSpeed();
+		this.projBox.addToXCoord(-getSpeed());
 		if (distanceTraveled > projectileRange) {
 			visible = false;
 		}

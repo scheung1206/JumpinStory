@@ -165,11 +165,11 @@ public class GameLoop{
 		background.setTile(wallTex, worldX * ((worldY*2/3)+3),worldX * worldY, true, false );//Bottom Border
 		//background.setTile(groundTex, worldX * (worldY/3),worldX * worldY/3 + 1, true, false );
 		
-		for (int i=3; i < worldY/8 + 2; i++)
-		{
-			background.setTile(wallTex,i * worldX + 6,i * worldX + 10, true, true);
-			background.setTile(wallTex,i * worldX + 15,i * worldX + 18, true, true);
-		}
+//		for (int i=3; i < worldY/8 + 2; i++)
+//		{
+//			background.setTile(wallTex,i * worldX + 6,i * worldX + 10, true, true);
+//			background.setTile(wallTex,i * worldX + 15,i * worldX + 18, true, true);
+//		}
 		for (int i=0; i < worldY; i++)
 		{
 			background.setTile(wallTex,i * worldX,i * worldX + 1, true, false);
@@ -203,7 +203,8 @@ public class GameLoop{
 		platforms.add(new Platform(2800, 2700, 1));//4
 		
 		//Second Row
-		platforms.add(new Platform(2450, 2700, 3));//4
+		platforms.add(new Platform(2300, 2700, 2));//4
+		platforms.add(new Platform(2375, 3000, 1));//4
 		
 		Player player = new Player(spritePos[0], spritePos[1], spriteSize[0], spriteSize[1], playerTex);
 		
@@ -211,11 +212,23 @@ public class GameLoop{
 		ladderList.add(new Ladder(2800, 2900,95,100,ladderTex,false));
 		ladderList.add(new Ladder(2800, 2800,95,100,ladderTex,false));
 		ladderList.add(new Ladder(2800, 2700,95,100,ladderTex,false));
+		
+		
+		ladderList.add(new Ladder(2100, 3200,95,100,ladderTex,false));
+		ladderList.add(new Ladder(2100, 3100,95,100,ladderTex,false));
+		ladderList.add(new Ladder(2100, 3000,95,100,ladderTex,false));
+		ladderList.add(new Ladder(2100, 2900,95,100,ladderTex,false));
+		ladderList.add(new Ladder(2100, 2800,95,100,ladderTex,false));
+		ladderList.add(new Ladder(2100, 2700,95,100,ladderTex,false));
+		ladderList.add(new Ladder(2100, 2600,95,100,ladderTex,false));
+		ladderList.add(new Ladder(2100, 2500,95,100,ladderTex,false));
+		ladderList.add(new Ladder(2100, 2400,95,100,ladderTex,false));
 
 		ArrayList<Lupin> lupinList = new ArrayList<Lupin>();
 		lupinList.add(new Lupin(1500, 3900,95,100, lupinTex,true));
 		lupinList.add(new Lupin(2225, 3500,95,100, lupinTex,true));
 		lupinList.add(new Lupin(2225, 3200,95,100, lupinTex,true));
+		lupinList.add(new Lupin(2375, 2900,95,100, lupinTex,false));
 //		backgroundBossMainA = new BackgroundDef(bossSkyTexA, true, 0, 50, 10, 10);
 //		backgroundBossMainB = new BackgroundDef(bossSkyTexB, true, 0, 50, 10, 10);
 //		backgroundBossFloor = new BackgroundDef(bossGroundtex, false, 50, 60, 10, 10);
@@ -314,7 +327,7 @@ public class GameLoop{
 						}
 					} else {
 						playerBox = player.getHitbox();
-						if (AABBIntersect(player.getHitbox(), platform.getCollisionBox()) && !kbState[KeyEvent.VK_S]) {
+						if (AABBIntersect(player.getHitbox(), platform.getCollisionBox())) {
 							if (spritePrevY + 100 - platform.getY() < 2) {
 								player.setJumping(false);
 								player.setyVelocity(0);
@@ -327,10 +340,30 @@ public class GameLoop{
 				
 				for (Lupin lupin: lupinList)
 				{
+					if (AABBIntersect(lupin.getAabb(), player.getHitbox()))
+					{
+						if (player.getReverse())
+						{
+							player.setX(player.getX() - 200);
+						}
+						else
+						{
+							player.setX(player.getX() + 200);
+						}
+					}
+					
+					
 					for (int i = 0; i < lupin.getProjectiles().size(); i++) {
 						bananaProj = lupin.getProjectiles();
 						Projectile prj = bananaProj.get(i);
+						if (lupin.getReverse())
+						{
 						prj.move();
+						}
+						else
+						{
+						prj.moveLeft();
+						}
 						prjHitBox = bananaProj.get(i).getprojBox();
 						
 						for (int a = startX; a < endX; a++) {
@@ -351,7 +384,7 @@ public class GameLoop{
 						if (AABBIntersect(prjHitBox, player.getHitbox())) {
 							bananaProj.get(i).setVisible(false);
 							bananaProj.remove(i);
-							//sasukeSprite = hitSasuke;
+							player.setClimbing(false);
 							if (lupin.getReverse())
 							{
 								player.setY(player.getY() - 20);
@@ -366,6 +399,7 @@ public class GameLoop{
 					}
 				}
 				
+				// Collision with Ladder
 				Boolean touchingLadder = false;
 				for (Ladder ladder: ladderList)
 				{
@@ -420,6 +454,28 @@ public class GameLoop{
 					player.setCurrentTexture(mapleRunData.getCurFrame());
 				}
 			}
+
+			if (kbState[KeyEvent.VK_A] && player.isClimbing() && kbState[KeyEvent.VK_SPACE]) {
+				player.setClimbing(false);
+				player.setJumping(true);
+				player.setBounce(false);
+				player.setyVelocity(-3);
+				player.setCurrentTexture(jumpTex);
+				player.setY(player.getY() - 2);
+				player.setX(player.getX() - 5);
+				player.setReverse(false);
+			}
+			
+			if (kbState[KeyEvent.VK_D] && player.isClimbing() && kbState[KeyEvent.VK_SPACE]) {
+				player.setClimbing(false);
+				player.setJumping(true);
+				player.setBounce(false);
+				player.setyVelocity(-3);
+				player.setCurrentTexture(jumpTex);
+				player.setY(player.getY() - 2);
+				player.setX(player.getX() + 5);
+			}
+			
 			if (kbState[KeyEvent.VK_D] && player.getX() < worldX * tileSize[0] - spriteSize[0] && !player.isClimbing()) {
 				player.setX(player.getX() + 5);
 				player.setReverse(true);
@@ -466,7 +522,19 @@ public class GameLoop{
 
 			// Does nothing as of now
 			if (kbState[KeyEvent.VK_S] && player.getY() < background.getHeight() * tileSize[1] - spriteSize[1]) {
+				if (touchLadder)
+				{
+					player.setClimbing(true);
+					player.setJumping(false);
+					player.setBounce(false);
+					player.setyVelocity(0);
+					player.setCurrentTexture(climbTex);
+					player.setY(player.getY() + 2);
+				}
+				else
+				{
 				player.setCurrentTexture(crawlTex);
+				}
 			}
             
             gl.glClearColor(0, 0, 0, 1);
