@@ -30,15 +30,7 @@ public class Tile {
 		this.collision = collision;
 	}
 	
-	public void loseHealth(int health)
-	{
-		if (wall == true)
-		{
-		this.health -= health;
-		}
-	}
-	
-	public int getHealth() {
-		return health;
+	public boolean isWall() {
+		return wall;
 	}
 }

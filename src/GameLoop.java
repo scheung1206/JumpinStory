@@ -64,6 +64,7 @@ public class GameLoop{
     
     // Boolean
     private static boolean touchLadder;
+    private static boolean touchWall;
     
     // Background
     private static BackgroundDef background;
@@ -165,14 +166,20 @@ public class GameLoop{
 		background.setTile(wallTex, worldX * ((worldY*2/3)+3),worldX * worldY, true, false );//Bottom Border
 		//background.setTile(groundTex, worldX * (worldY/3),worldX * worldY/3 + 1, true, false );
 		
-//		for (int i=3; i < worldY/8 + 2; i++)
-//		{
-//			background.setTile(wallTex,i * worldX + 6,i * worldX + 10, true, true);
-//			background.setTile(wallTex,i * worldX + 15,i * worldX + 18, true, true);
-//		}
+		
 		for (int i=0; i < worldY; i++)
 		{
 			background.setTile(wallTex,i * worldX,i * worldX + 1, true, false);
+		}
+		
+		for (int i=34; i < 44; i++)
+		{
+			background.setTile(wallTex,i * worldX + 19, i * worldX + 20, true, true);
+		}
+		
+		for (int i=30; i < 37; i++)
+		{
+			background.setTile(wallTex,i * worldX + 12, i * worldX + 13, true, true);
 		}
 		
 		ArrayList<Platform> platforms = new ArrayList<Platform>();
@@ -199,12 +206,29 @@ public class GameLoop{
 		platforms.add(new Platform(2450, 3300, 1));//1
 		platforms.add(new Platform(2225, 3300, 1));//lupin
 		platforms.add(new Platform(2800, 3150, 4));//4
-		platforms.add(new Platform(2800, 3000, 1));//4
-		platforms.add(new Platform(2800, 2700, 1));//4
+		platforms.add(new Platform(2800, 3000, 1));//1
+		platforms.add(new Platform(2800, 2700, 1));//1
 		
 		//Second Row
-		platforms.add(new Platform(2300, 2700, 2));//4
-		platforms.add(new Platform(2375, 3000, 1));//4
+		platforms.add(new Platform(2300, 2700, 2));//2
+		platforms.add(new Platform(2375, 3000, 1));//lupin
+		platforms.add(new Platform(1700, 3500, 3));//3
+		
+		platforms.add(new Platform(1775, 2800, 1));//lupin
+		platforms.add(new Platform(1775, 3000, 1));//lupin
+		platforms.add(new Platform(1775, 3200, 1));//lupin
+		platforms.add(new Platform(1275, 2400, 4));//4
+		
+		platforms.add(new Platform(1150, 2550, 1)); // walk down
+		platforms.add(new Platform(1300, 2700, 1)); // walk down
+		platforms.add(new Platform(1150, 2850, 1)); // walk down
+		platforms.add(new Platform(1300, 3000, 1)); // walk down
+		platforms.add(new Platform(1150, 3150, 1)); // walk down
+		platforms.add(new Platform(850, 3200, 1)); // walk down
+		
+		platforms.add(new Platform(550, 3100, 1));
+		platforms.add(new Platform(100, 3000, 1));
+		platforms.add(new Platform(550, 2900, 1));
 		
 		Player player = new Player(spritePos[0], spritePos[1], spriteSize[0], spriteSize[1], playerTex);
 		
@@ -213,7 +237,8 @@ public class GameLoop{
 		ladderList.add(new Ladder(2800, 2800,95,100,ladderTex,false));
 		ladderList.add(new Ladder(2800, 2700,95,100,ladderTex,false));
 		
-		
+		ladderList.add(new Ladder(2100, 3400,95,100,ladderTex,false));
+		ladderList.add(new Ladder(2100, 3300,95,100,ladderTex,false));
 		ladderList.add(new Ladder(2100, 3200,95,100,ladderTex,false));
 		ladderList.add(new Ladder(2100, 3100,95,100,ladderTex,false));
 		ladderList.add(new Ladder(2100, 3000,95,100,ladderTex,false));
@@ -223,15 +248,27 @@ public class GameLoop{
 		ladderList.add(new Ladder(2100, 2600,95,100,ladderTex,false));
 		ladderList.add(new Ladder(2100, 2500,95,100,ladderTex,false));
 		ladderList.add(new Ladder(2100, 2400,95,100,ladderTex,false));
+		
+		ladderList.add(new Ladder(1500, 3300,95,100,ladderTex,false));
+		ladderList.add(new Ladder(1500, 3200,95,100,ladderTex,false));
+		ladderList.add(new Ladder(1500, 3100,95,100,ladderTex,false));
+		ladderList.add(new Ladder(1500, 3000,95,100,ladderTex,false));
+		ladderList.add(new Ladder(1500, 2900,95,100,ladderTex,false));
+		ladderList.add(new Ladder(1500, 2800,95,100,ladderTex,false));
+		ladderList.add(new Ladder(1500, 2700,95,100,ladderTex,false));
+		ladderList.add(new Ladder(1500, 2600,95,100,ladderTex,false));
+		ladderList.add(new Ladder(1500, 2500,95,100,ladderTex,false));
+		ladderList.add(new Ladder(1500, 2400,95,100,ladderTex,false));
 
 		ArrayList<Lupin> lupinList = new ArrayList<Lupin>();
 		lupinList.add(new Lupin(1500, 3900,95,100, lupinTex,true));
 		lupinList.add(new Lupin(2225, 3500,95,100, lupinTex,true));
 		lupinList.add(new Lupin(2225, 3200,95,100, lupinTex,true));
 		lupinList.add(new Lupin(2375, 2900,95,100, lupinTex,false));
-//		backgroundBossMainA = new BackgroundDef(bossSkyTexA, true, 0, 50, 10, 10);
-//		backgroundBossMainB = new BackgroundDef(bossSkyTexB, true, 0, 50, 10, 10);
-//		backgroundBossFloor = new BackgroundDef(bossGroundtex, false, 50, 60, 10, 10);
+		
+		lupinList.add(new Lupin(1775, 2700,95,100, lupinTex,false));
+		lupinList.add(new Lupin(1775, 2900,95,100, lupinTex,false));
+		lupinList.add(new Lupin(1775, 3100,95,100, lupinTex,false));
 			
         // The game loop
         long lastFrameNS;
@@ -301,12 +338,20 @@ public class GameLoop{
 										player.setyVelocity(0);
 										}
 								}
+								else if (background.getTile(i, j).isWall())
+								{
+									player.setX(spritePrevX);
+									player.setY(spritePrevY+5);
+									player.setJumping(false);
+									player.setyVelocity(0);
+								}
 								else {
 								player.setX(spritePrevX);
 								player.setY(spritePrevY);
 								player.setJumping(false);
 								player.setyVelocity(0);
 								}
+								
 							}
 						}
 					}
@@ -340,6 +385,7 @@ public class GameLoop{
 				
 				for (Lupin lupin: lupinList)
 				{
+					//Collision PLayer vs Lupin
 					if (AABBIntersect(lupin.getAabb(), player.getHitbox()))
 					{
 						if (player.getReverse())
@@ -350,6 +396,7 @@ public class GameLoop{
 						{
 							player.setX(player.getX() + 200);
 						}
+						player.setClimbing(false);
 					}
 					
 					
