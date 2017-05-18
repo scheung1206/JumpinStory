@@ -633,7 +633,7 @@ public class GameLoop{
             /**
 			 * Player movement code.
 			 */
-			if (kbState[KeyEvent.VK_A] && !player.isClimbing()) {
+			if ((kbState[KeyEvent.VK_LEFT] || kbState[KeyEvent.VK_A]) && !player.isClimbing()) {
 				player.setX(player.getX() - 5);
 				player.setReverse(false);
 				if (player.isJumping() || player.getyVelocity() > 0)
@@ -646,7 +646,7 @@ public class GameLoop{
 				}
 			}
 
-			if (kbState[KeyEvent.VK_A] && player.isClimbing() && kbState[KeyEvent.VK_SPACE]) {
+			if ((kbState[KeyEvent.VK_LEFT] || kbState[KeyEvent.VK_A]) && player.isClimbing() && kbState[KeyEvent.VK_SPACE]) {
 				player.setClimbing(false);
 				player.setJumping(true);
 				player.setBounce(false);
@@ -657,7 +657,7 @@ public class GameLoop{
 				player.setReverse(false);
 			}
 			
-			if (kbState[KeyEvent.VK_D] && player.isClimbing() && kbState[KeyEvent.VK_SPACE]) {
+			if ((kbState[KeyEvent.VK_RIGHT] || kbState[KeyEvent.VK_D]) && player.isClimbing() && kbState[KeyEvent.VK_SPACE]) {
 				player.setClimbing(false);
 				player.setJumping(true);
 				player.setBounce(false);
@@ -667,7 +667,7 @@ public class GameLoop{
 				player.setX(player.getX() + 5);
 			}
 			
-			if (kbState[KeyEvent.VK_D] && player.getX() < worldX * tileSize[0] - spriteSize[0] && !player.isClimbing()) {
+			if ((kbState[KeyEvent.VK_RIGHT] || kbState[KeyEvent.VK_D]) && player.getX() < worldX * tileSize[0] - spriteSize[0] && !player.isClimbing()) {
 				player.setX(player.getX() + 5);
 				player.setReverse(true);
 				if (player.isJumping() || player.getyVelocity() > 0)
@@ -695,7 +695,7 @@ public class GameLoop{
 				}
 			}
 			
-			if (kbState[KeyEvent.VK_W]) {
+			if (kbState[KeyEvent.VK_UP] || kbState[KeyEvent.VK_W]) {
 				if (touchLadder)
 				{
 				player.setClimbing(true);
@@ -712,7 +712,7 @@ public class GameLoop{
 				}
 			}
 
-			if (kbState[KeyEvent.VK_S] && player.getY() < background.getHeight() * tileSize[1] - spriteSize[1]) {
+			if ((kbState[KeyEvent.VK_DOWN] || kbState[KeyEvent.VK_S]) && player.getY() < background.getHeight() * tileSize[1] - spriteSize[1]) {
 				if (touchLadder)
 				{
 					player.setClimbing(true);

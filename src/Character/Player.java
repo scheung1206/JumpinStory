@@ -11,35 +11,22 @@ public class Player {
 	private int x;
 	private int y;
 	private int width, height;
-	private int health, hurtTimer;
 	private double yVelocity;
 	private int xVelocity;
 	private double acceleration;
-	private int boxXoffset;
-	
 	private AABB hitbox;
-	private boolean reverse, visible, isClimbing, isHit, isJumping, invincible, isPunching, isDead, isCelebrating, bounce;
+	private boolean reverse, isClimbing, isJumping, bounce;
 	private int currentTexture;
 	
 	public Player(int x, int y, int width, int height, int tex) {
 		this.x = x;
 		this.y = y;
-		this.health = 3;
-		visible = true;
-		
 		hitbox = new AABB(x, y, width, height);
 		reverse = false;
 		isClimbing = false;
-		isHit = false;
-		setDead(false);
 		acceleration = .2;
 		yVelocity = 0;
 		xVelocity = 0;
-		hurtTimer = 0;
-		boxXoffset = 0;
-		invincible = false;
-		isPunching = false;
-		isCelebrating = false;
 		currentTexture = tex;
 		this.width = width;
 		this.height = height;
@@ -84,7 +71,7 @@ public class Player {
 
 	public void setX(int x) {
 		this.x = x;
-		hitbox.setX(x + boxXoffset);
+		hitbox.setX(x);
 	}
 
 	public int getY() {
@@ -96,14 +83,6 @@ public class Player {
 		hitbox.setY(y);
 	}
 	
-	
-	public int getHealth() {
-		return health;
-	}
-
-	public void setHealth(int health) {
-		this.health = health;
-	}
 	
 	public AABB getHitbox() {
 		return hitbox;
@@ -117,21 +96,6 @@ public class Player {
 		reverse = bool;
 	}
 	
-	public void setVisible(boolean bool){
-		visible = bool;
-	}
-	
-	public boolean getVisible() {
-		return visible;
-	}
-
-	public boolean isHit() {
-		return isHit;
-	}
-
-	public void setHit(boolean isHit) {
-		this.isHit = isHit;
-	}
 
 	public int getCurrentTexture() {
 		return currentTexture;
@@ -157,54 +121,6 @@ public class Player {
 		this.width = width;
 	}
 
-	public boolean isInvincible() {
-		return invincible;
-	}
-
-	public void setInvincible(boolean invincible) {
-		this.invincible = invincible;
-	}
-
-	public boolean isPunching() {
-		return isPunching;
-	}
-
-	public void setPunching(boolean isPunching) {
-		this.isPunching = isPunching;
-	}
-
-	public int getHurtTimer() {
-		return hurtTimer;
-	}
-
-	public void setHurtTimer(int hurtTimer) {
-		this.hurtTimer = hurtTimer;
-	}
-
-	public boolean isDead() {
-		return isDead;
-	}
-
-	public void setDead(boolean isDead) {
-		this.isDead = isDead;
-	}
-
-	public int getBoxXoffset() {
-		return boxXoffset;
-	}
-
-	public void setBoxXoffset(int boxXoffset) {
-		this.boxXoffset = boxXoffset;
-	}
-
-	public boolean isCelebrating() {
-		return isCelebrating;
-	}
-
-	public void setCelebrating(boolean isCelebrating) {
-		this.isCelebrating = isCelebrating;
-	}
-	
 	public void setxVelocity(int xVelocity) {
 		this.xVelocity = xVelocity;
 	}
