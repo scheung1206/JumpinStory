@@ -12,6 +12,7 @@ import Camera.Camera;
 import Character.Lupin;
 import Character.Misc;
 import Character.Player;
+import Music.Sound;
 import Projectile.Projectile;
 
 import com.jogamp.newt.event.KeyEvent;
@@ -21,6 +22,8 @@ import com.jogamp.newt.opengl.GLWindow;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+
+import javax.sound.sampled.Clip;
 
 public class GameLoop{
     // Set this to true to make the game loop exit.
@@ -382,6 +385,8 @@ public class GameLoop{
 		
 		ArrayList<Misc> miscList = new ArrayList<Misc>();
 		miscList.add(new Misc(2800,120,200,150,taxiTex,false));
+		
+		Sound soundMain = Sound.loadFromFile("res/mapleMusic.wav");
 			
         // The game loop
         long lastFrameNS;
@@ -396,6 +401,8 @@ public class GameLoop{
 		int spritePrevY = player.getY();
         
         AABB tileAABB;
+        
+        Clip bgClip = soundMain.playLooping();
         
         while (!shouldExit) {
             System.arraycopy(kbState, 0, kbPrevState, 0, kbState.length);
