@@ -172,6 +172,23 @@ public class GameLoop{
 		AnimationDef mapleRunDef = new AnimationDef("mapleRun", mapleRun);
 		AnimationData mapleRunData = new AnimationData(mapleRunDef);
 		
+		FrameDef[] mapleClimb = { new FrameDef(glTexImageTGAFile(gl, "res/mapleClimb1.tga", spriteSize), 300),
+				new FrameDef(glTexImageTGAFile(gl, "res/mapleClimb2.tga", spriteSize), 300)
+				};
+		AnimationDef mapleClimbDef = new AnimationDef("mapleClimb", mapleClimb);
+		AnimationData mapleClimbData = new AnimationData(mapleClimbDef);
+		
+		FrameDef[] lupinThrow = { new FrameDef(glTexImageTGAFile(gl, "res/lupinThrow1.tga", spriteSize), 300),
+				new FrameDef(glTexImageTGAFile(gl, "res/lupinThrow2.tga", spriteSize), 300),
+				new FrameDef(glTexImageTGAFile(gl, "res/lupinThrow3.tga", spriteSize), 300),
+				new FrameDef(glTexImageTGAFile(gl, "res/lupinThrow4.tga", spriteSize), 300),
+				new FrameDef(glTexImageTGAFile(gl, "res/lupinThrow5.tga", spriteSize), 300),
+				new FrameDef(glTexImageTGAFile(gl, "res/lupinThrow6.tga", spriteSize), 300),
+				new FrameDef(glTexImageTGAFile(gl, "res/lupinThrow7.tga", spriteSize), 300)
+				};
+		AnimationDef lupinThrowDef = new AnimationDef("lupinThrow", lupinThrow);
+		AnimationData lupinThrowData = new AnimationData(lupinThrowDef);
+		
 		background = new BackgroundDef(worldX,worldY,backgroundTex, 0, worldX * worldY, false, false);
 		background.setTile(wallTex, 0, worldX, true, false); // Top Border
 		background.setTile(wallTex, worldX * ((worldY*2/3)+3),worldX * worldY, true, false );//Bottom Border
@@ -359,29 +376,29 @@ public class GameLoop{
 		
 
 		ArrayList<Lupin> lupinList = new ArrayList<Lupin>();
-		lupinList.add(new Lupin(1500, 3900,95,100, lupinTex,true));
-		lupinList.add(new Lupin(2225, 3500,95,100, lupinTex,true));
-		lupinList.add(new Lupin(2225, 3200,95,100, lupinTex,true));
-		lupinList.add(new Lupin(2375, 2900,95,100, lupinTex,false));
+		lupinList.add(new Lupin(1500, 3900,95,100, lupinTex,true,lupinThrowDef));
+		lupinList.add(new Lupin(2225, 3500,95,100, lupinTex,true,lupinThrowDef));
+		lupinList.add(new Lupin(2225, 3200,95,100, lupinTex,true,lupinThrowDef));
+		lupinList.add(new Lupin(2375, 2900,95,100, lupinTex,false,lupinThrowDef));
 		
-		lupinList.add(new Lupin(1775, 2700,95,100, lupinTex,false));
-		lupinList.add(new Lupin(1775, 2900,95,100, lupinTex,false));
-		lupinList.add(new Lupin(1775, 3100,95,100, lupinTex,false));
+		lupinList.add(new Lupin(1775, 2700,95,100, lupinTex,false,lupinThrowDef));
+		lupinList.add(new Lupin(1775, 2900,95,100, lupinTex,false,lupinThrowDef));
+		lupinList.add(new Lupin(1775, 3100,95,100, lupinTex,false,lupinThrowDef));
 		
-		lupinList.add(new Lupin(500, 1900,75,100, lupinTex,true));
-		lupinList.add(new Lupin(1025, 1900,75,100, lupinTex,false));
-		lupinList.add(new Lupin(1175, 1900,75,100, lupinTex,true));
-		lupinList.add(new Lupin(1875, 1900,75,100, lupinTex,false));
-		lupinList.add(new Lupin(2025, 1900,75,100, lupinTex,true));
+		lupinList.add(new Lupin(500, 1900,75,100, lupinTex,true,lupinThrowDef));
+		lupinList.add(new Lupin(1025, 1900,75,100, lupinTex,false,lupinThrowDef));
+		lupinList.add(new Lupin(1175, 1900,75,100, lupinTex,true,lupinThrowDef));
+		lupinList.add(new Lupin(1875, 1900,75,100, lupinTex,false,lupinThrowDef));
+		lupinList.add(new Lupin(2025, 1900,75,100, lupinTex,true,lupinThrowDef));
 		
-		lupinList.add(new Lupin(1700, 1350,75,100, lupinTex,true));
-		lupinList.add(new Lupin(1700, 1050,75,100, lupinTex,true));
-		lupinList.add(new Lupin(1700, 750,75,100, lupinTex,true));
-		lupinList.add(new Lupin(1700, 600,75,100, lupinTex,true));
+		lupinList.add(new Lupin(1700, 1350,75,100, lupinTex,true,lupinThrowDef));
+		lupinList.add(new Lupin(1700, 1050,75,100, lupinTex,true,lupinThrowDef));
+		lupinList.add(new Lupin(1700, 750,75,100, lupinTex,true,lupinThrowDef));
+		lupinList.add(new Lupin(1700, 600,75,100, lupinTex,true,lupinThrowDef));
 		
-		lupinList.add(new Lupin(2300, 1050,75,100, lupinTex,false));
-		lupinList.add(new Lupin(2300, 750,75,100, lupinTex,false));
-		lupinList.add(new Lupin(2300, 600,75,100, lupinTex,false));
+		lupinList.add(new Lupin(2300, 1050,75,100, lupinTex,false,lupinThrowDef));
+		lupinList.add(new Lupin(2300, 750,75,100, lupinTex,false,lupinThrowDef));
+		lupinList.add(new Lupin(2300, 600,75,100, lupinTex,false,lupinThrowDef));
 		
 		ArrayList<Misc> miscList = new ArrayList<Misc>();
 		miscList.add(new Misc(2800,120,200,150,taxiTex,false));
@@ -417,9 +434,6 @@ public class GameLoop{
             window.display();
             
             if (player.isJumping()) {
-				//playerJumpAnimation.updateSprite(delta);
-				//player.setCurrentTexture(playerJumpAnimation.getCurrentFrame());
-
 				player.setY((int) (player.getY() + player.getyVelocity()));
 				player.setyVelocity(player.getyVelocity() + player.getAcceleration());
 			} 
@@ -688,7 +702,8 @@ public class GameLoop{
 				player.setJumping(false);
 				player.setBounce(false);
 				player.setyVelocity(0);
-				player.setCurrentTexture(climbTex);
+				mapleClimbData.update(deltaTimeMS);
+				player.setCurrentTexture(mapleClimbData.getCurFrame());
 				player.setY(player.getY() - 2);
 				}
 				else
@@ -704,7 +719,8 @@ public class GameLoop{
 					player.setJumping(false);
 					player.setBounce(false);
 					player.setyVelocity(0);
-					player.setCurrentTexture(climbTex);
+					mapleClimbData.update(deltaTimeMS);
+					player.setCurrentTexture(mapleClimbData.getCurFrame());
 					player.setY(player.getY() + 2);
 				}
 				else

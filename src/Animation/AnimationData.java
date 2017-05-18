@@ -40,4 +40,8 @@ public class AnimationData {
 	{
 	return curFrame;
 	}
+	
+	public void setCurFrame(int curFrame) {
+		this.curFrame = curFrame;
+	}
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import AABB.AABB;
+import Animation.AnimationData;
+import Animation.AnimationDef;
 import Projectile.Projectile;
 
 public class Lupin {
@@ -11,22 +13,28 @@ public class Lupin {
 	private int y;
 	private int width, height;
 	private int currentTexture;
+	private int defaultTex;
 	private AABB aabb;
 	private boolean reverse;
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	private float delay;
+	private AnimationDef throwDef;
+	private AnimationData throwData;
 	
-	public Lupin(int x,int y,int w,int h,int tex, boolean reverse)
+	public Lupin(int x,int y,int w,int h,int tex, boolean reverse,AnimationDef def)
 	{
 		this.x = x;
 		this.y = y;
 		this.width = w;
 		this.height = h;
 		this.currentTexture = tex;
+		this.defaultTex = tex;
 		this.aabb = new AABB(x,y,w,h);
 		this.reverse = reverse;
 		Random random = new Random();
 		this.delay = random.nextInt(500);
+		this.throwDef = def;
+		this.throwData = new AnimationData(this.throwDef);
 	}
 	
 	public int getX()
@@ -80,9 +88,16 @@ public class Lupin {
 		delay += deltaTime;
 		if (delay >= 3000)
 		{
-		Projectile p = new Projectile(this.x, this.y +10);
-		addProjectile(p);
-		delay = 0;
+			throwData.update(deltaTime);
+			setCurrentTexture(throwData.getCurFrame());
+		if (throwData.getCurFrame() == 26)
+			{
+			Projectile p = new Projectile(this.x, this.y +10);
+			addProjectile(p);
+			delay = 0;
+			throwData.setCurFrame(1);
+			setCurrentTexture(defaultTex);
+			}
 		}
 	}
 }
