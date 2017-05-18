@@ -1,6 +1,7 @@
 package Character;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import AABB.AABB;
 import Projectile.Projectile;
@@ -13,7 +14,7 @@ public class Lupin {
 	private AABB aabb;
 	private boolean reverse;
 	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
-	private float delay = 0;
+	private float delay;
 	
 	public Lupin(int x,int y,int w,int h,int tex, boolean reverse)
 	{
@@ -24,6 +25,8 @@ public class Lupin {
 		this.currentTexture = tex;
 		this.aabb = new AABB(x,y,w,h);
 		this.reverse = reverse;
+		Random random = new Random();
+		this.delay = random.nextInt(500);
 	}
 	
 	public int getX()

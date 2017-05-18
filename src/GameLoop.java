@@ -46,6 +46,9 @@ public class GameLoop{
     
     // Projectile Size
     private static int[] projectileSize = new int[] {50,50};
+    
+    // Title Size
+    private static int[] screenSize = new int[] {800,600};
 
     // Texture for the sprite.
     private static int playerTex;
@@ -63,9 +66,11 @@ public class GameLoop{
     private static int platformRTex;
     private static int ladderTex;
     private static int taxiTex;
+    private static int titleScreen;
     
     // Boolean
     private static boolean touchLadder;
+    private static boolean gameover;
     
     // Background
     private static BackgroundDef background;
@@ -106,7 +111,7 @@ public class GameLoop{
         // Create the window and OpenGL context.
         GLWindow window = GLWindow.create(new GLCapabilities(gl2Profile));
         window.setSize(xRes, yRes);
-        window.setTitle("Jumpin Story");
+        window.setTitle("Jumpin' Story");
         window.setVisible(true);
         window.setDefaultCloseOperation(
                 WindowClosingProtocol.WindowClosingMode.DISPOSE_ON_CLOSE);
@@ -140,6 +145,7 @@ public class GameLoop{
 
 		// Game initialization goes here.
 		
+        gameover = true;
 		backgroundTex = glTexImageTGAFile(gl, "res/backgroundTex.tga", tileSize);
 		wallTex = glTexImageTGAFile(gl, "res/wall.tga", tileSize);
 		playerTex = glTexImageTGAFile(gl, "res/mapleDefault.tga", spriteSize);
@@ -153,6 +159,7 @@ public class GameLoop{
 		ladderTex = glTexImageTGAFile(gl, "res/mapleLadder.tga", tileSize);
 		climbTex = glTexImageTGAFile(gl, "res/mapleClimb1.tga", spriteSize);
 		taxiTex = glTexImageTGAFile(gl, "res/taxiTex.tga", spriteSize);
+		titleScreen = glTexImageTGAFile(gl, "res/titleScreen.tga", screenSize);
 		
 		FrameDef[] mapleRun = { new FrameDef(glTexImageTGAFile(gl, "res/mapleRun1.tga", spriteSize), 50),
 				new FrameDef(glTexImageTGAFile(gl, "res/mapleRun2.tga", spriteSize), 50), 
@@ -297,7 +304,7 @@ public class GameLoop{
 		platforms.add(new Platform(650, 800, 1)); // Long jumps
 		platforms.add(new Platform(200, 700, 1)); // Long jumps
 		
-		platforms.add(new Platform(200, 300, 38)); 
+		platforms.add(new Platform(200, 300, 38)); //Finish
 		
 		
 		Player player = new Player(spritePos[0], spritePos[1], spriteSize[0], spriteSize[1], playerTex);
@@ -399,6 +406,7 @@ public class GameLoop{
 			curFrameMs = curFrameNS / 1000000;
  
             // Actually, this runs the entire OS message pump.
+			
             window.display();
             
             if (player.isJumping()) {
@@ -568,10 +576,19 @@ public class GameLoop{
 				{
 					touchLadder = false;
 				}
+				
+				for (Misc misc: miscList)
+				{
+					if (AABBIntersect(misc.getAabb(), player.getHitbox())) {
+						gameover = true;
+						player.setX(100);
+						player.setY(100);
+					}
+				}
+				
 
 			lastPhysicsFrameMs += physicsDeltaMs;
-			} while (lastPhysicsFrameMs + physicsDeltaMs > curFrameMs);
-						
+			} while (lastPhysicsFrameMs + physicsDeltaMs > curFrameMs);		
 			spritePrevX = player.getX();
 			spritePrevY = player.getY();
             
@@ -673,7 +690,6 @@ public class GameLoop{
 				}
 			}
 
-			// Does nothing as of now
 			if (kbState[KeyEvent.VK_S] && player.getY() < background.getHeight() * tileSize[1] - spriteSize[1]) {
 				if (touchLadder)
 				{
@@ -776,6 +792,22 @@ public class GameLoop{
 				glDrawSprite(gl, player.getCurrentTexture(), player.getX() - camera.getX(),player.getY() - camera.getY(), player.getWidth(), player.getHeight(), player.getReverse());
 			}
 			
+			while(gameover == true){
+				System.arraycopy(kbState, 0, kbPrevState, 0, kbState.length);
+				glDrawSprite(gl, titleScreen, 0 - camera.getX(),
+						0 - camera.getY(), screenSize[0], screenSize[1], false);
+				
+				if(kbState[KeyEvent.VK_ENTER]){
+					gameover = false;
+					player.setX(100);
+					player.setY(3900);
+				}
+				window.display();
+				if (!window.isVisible()) {
+					shouldExit = true;
+					break;
+				}
+				}
 			}
     }
 
